@@ -1,7 +1,0 @@
-models:
-  Salesman:
-    name: string
-    relationships:
-      hasOne: User:Lead
-      hasMany: ManyModel:ManyAlias
-      belongsTo: BelongsModel:BelongsAlias

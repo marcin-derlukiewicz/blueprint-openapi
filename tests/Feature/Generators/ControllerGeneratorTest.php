@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Generators;
+namespace Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;

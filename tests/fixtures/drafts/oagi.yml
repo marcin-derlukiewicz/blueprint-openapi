@@ -1,0 +1,714 @@
+---
+openapi: "3.0.3"
+info:
+  title: "api fms"
+  version: "v1"
+  x-oagis-license: ""
+paths:
+  /symfonia-context/v1/chart-of-accounts-list:
+    summary: ""
+    description: ""
+    get:
+      summary: ""
+      description: ""
+      security:
+      - OAuth2:
+        - "chartOfAccountsRead"
+      operationId: "symfoniaContext_queryChartOfAccountsList"
+      parameters:
+      - name: "sinceLastDateTime"
+        in: "query"
+        description: ""
+        required: false
+        schema:
+          type: "string"
+          format: "date-time"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/queryChartOfAccountsList"
+    put:
+      summary: ""
+      description: ""
+      security:
+      - OAuth2:
+        - "chartOfAccountsWrite"
+      operationId: "symfoniaContext_replaceChartOfAccountsList"
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/replaceChartOfAccountsList"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/queryChartOfAccountsList"
+  /symfonia-context/v1/chart-of-accounts:
+    summary: ""
+    description: ""
+    post:
+      summary: ""
+      description: ""
+      security:
+      - OAuth2:
+        - "chartOfAccountsWrite"
+      operationId: "symfoniaContext_createChartOfAccounts"
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createChartOfAccounts"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/queryChartOfAccounts"
+components:
+  securitySchemes:
+    OAuth2:
+      type: "oauth2"
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://example.com/oauth/authorize"
+          tokenUrl: "https://example.com/oauth/token"
+          scopes:
+            chartOfAccountsRead: "Allows Chart Of Accounts data to be read"
+            chartOfAccountsWrite: "Allows Chart Of Accounts data to be written"
+  schemas:
+    cl_20090305_clm542173a20090305_iso3alphacurrencycodecontenttype_b219e03523e04d1fb3379d37001c8f0c:
+      type: "string"
+      format: "token"
+      enum:
+      - "AED"
+      - "AFN"
+      - "ALL"
+      - "AMD"
+      - "ANG"
+      - "AOA"
+      - "ARS"
+      - "AUD"
+      - "AWG"
+      - "AZM"
+      - "BAM"
+      - "BBD"
+      - "BDT"
+      - "BGN"
+      - "BHD"
+      - "BIF"
+      - "BMD"
+      - "BND"
+      - "BOB"
+      - "BRL"
+      - "BSD"
+      - "BTN"
+      - "BWP"
+      - "BYR"
+      - "BZD"
+      - "CAD"
+      - "CDF"
+      - "CHF"
+      - "CLP"
+      - "CNY"
+      - "COP"
+      - "CRC"
+      - "CUP"
+      - "CVE"
+      - "CYP"
+      - "CZK"
+      - "DJF"
+      - "DKK"
+      - "DOP"
+      - "DZD"
+      - "EEK"
+      - "EGP"
+      - "ERN"
+      - "ETB"
+      - "EUR"
+      - "FJD"
+      - "FKP"
+      - "GBP"
+      - "GEL"
+      - "GHC"
+      - "GIP"
+      - "GMD"
+      - "GNF"
+      - "GTQ"
+      - "GYD"
+      - "HKD"
+      - "HNL"
+      - "HRK"
+      - "HTG"
+      - "HUF"
+      - "IDR"
+      - "ILS"
+      - "INR"
+      - "IQD"
+      - "IRR"
+      - "ISK"
+      - "JMD"
+      - "JOD"
+      - "JPY"
+      - "KES"
+      - "KGS"
+      - "KHR"
+      - "KMF"
+      - "KPW"
+      - "KRW"
+      - "KWD"
+      - "KYD"
+      - "KZT"
+      - "LAK"
+      - "LBP"
+      - "LKR"
+      - "LRD"
+      - "LSL"
+      - "LTL"
+      - "LVL"
+      - "LYD"
+      - "MAD"
+      - "MDL"
+      - "MGF"
+      - "MKD"
+      - "MMK"
+      - "MNT"
+      - "MOP"
+      - "MRO"
+      - "MTL"
+      - "MUR"
+      - "MVR"
+      - "MWK"
+      - "MXN"
+      - "MYR"
+      - "MZM"
+      - "NAD"
+      - "NGN"
+      - "NIO"
+      - "NOK"
+      - "NPR"
+      - "NZD"
+      - "OMR"
+      - "PAB"
+      - "PEN"
+      - "PGK"
+      - "PHP"
+      - "PKR"
+      - "PLN"
+      - "PYG"
+      - "QAR"
+      - "ROL"
+      - "RON"
+      - "RUB"
+      - "RWF"
+      - "SAR"
+      - "SBD"
+      - "SCR"
+      - "SDD"
+      - "SEK"
+      - "SGD"
+      - "SHP"
+      - "SIT"
+      - "SKK"
+      - "SLL"
+      - "SOS"
+      - "SRG"
+      - "STD"
+      - "SVC"
+      - "SYP"
+      - "SZL"
+      - "THB"
+      - "TJS"
+      - "TMM"
+      - "TND"
+      - "TOP"
+      - "TRL"
+      - "TRY"
+      - "TTD"
+      - "TWD"
+      - "TZS"
+      - "UAH"
+      - "UGX"
+      - "USD"
+      - "UYU"
+      - "UZS"
+      - "VEB"
+      - "VEF"
+      - "VND"
+      - "VUV"
+      - "WST"
+      - "XAF"
+      - "XAG"
+      - "XAU"
+      - "XCD"
+      - "XDR"
+      - "XOF"
+      - "XPD"
+      - "XPF"
+      - "XPT"
+      - "YER"
+      - "YUM"
+      - "ZAR"
+      - "ZMK"
+      - "ZWD"
+    queryChartOfAccounts:
+      x-oagis-bie-guid: "91484be0a9f6491c9660fa2272f3baf6"
+      x-oagis-bie-date-time: "2024-02-21T11:22:27+0000"
+      x-oagis-bie-version: ""
+      x-oagis-bie-uri: "https://tenant.oagiscore.net/profile_bie/46"
+      x-oagis-release: "10.10.3"
+      x-oagis-release-date: "2024-02-14"
+      type: "object"
+      additionalProperties: false
+      properties:
+        uuid:
+          description: "Guid"
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        partyId:
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        idSet:
+          type: "array"
+          items:
+            type: "object"
+            required:
+            - "id"
+            additionalProperties: false
+            properties:
+              id:
+                type: "array"
+                minItems: 1
+                items:
+                  oneOf:
+                  - nullable: true
+                  - description: "400\n1\nam66673"
+                    example: ""
+                    type: "string"
+                    format: "normalizedString"
+        glEntityId:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "400-1-am66673"
+              example: ""
+              type: "string"
+              format: "normalizedString"
+        effectiveTimePeriod:
+          type: "object"
+          additionalProperties: false
+          properties:
+            startDateTime:
+              example: ""
+              type: "string"
+              format: "date-time"
+            endDateTime:
+              oneOf:
+              - nullable: true
+              - example: ""
+                type: "string"
+                format: "date-time"
+        accountTypeCode:
+          oneOf:
+          - nullable: true
+          - description: "pasywne, aktywne"
+            example: ""
+            type: "string"
+        currencyCode:
+          oneOf:
+          - nullable: true
+          - allOf:
+            - $ref: "#/components/schemas/cl_20090305_clm542173a20090305_iso3alphacurrencycodecontenttype_b219e03523e04d1fb3379d37001c8f0c"
+            - example: ""
+        description:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "opis konta księgowego"
+              example: ""
+              type: "string"
+        note:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "note dla konta księgowego"
+              example: ""
+              type: "string"
+    queryChartOfAccountsList:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/queryChartOfAccountsListEntry"
+    queryChartOfAccountsListEntry:
+      x-oagis-bie-guid: "91484be0a9f6491c9660fa2272f3baf6"
+      x-oagis-bie-date-time: "2024-02-21T11:22:27+0000"
+      x-oagis-bie-version: ""
+      x-oagis-bie-uri: "https://tenant.oagiscore.net/profile_bie/46"
+      x-oagis-release: "10.10.3"
+      x-oagis-release-date: "2024-02-14"
+      type: "object"
+      additionalProperties: false
+      properties:
+        uuid:
+          description: "Guid"
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        partyId:
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        idSet:
+          type: "array"
+          items:
+            type: "object"
+            required:
+            - "id"
+            additionalProperties: false
+            properties:
+              id:
+                type: "array"
+                minItems: 1
+                items:
+                  oneOf:
+                  - nullable: true
+                  - description: "400\n1\nam66673"
+                    example: ""
+                    type: "string"
+                    format: "normalizedString"
+        glEntityId:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "400-1-am66673"
+              example: ""
+              type: "string"
+              format: "normalizedString"
+        effectiveTimePeriod:
+          type: "object"
+          additionalProperties: false
+          properties:
+            startDateTime:
+              example: ""
+              type: "string"
+              format: "date-time"
+            endDateTime:
+              oneOf:
+              - nullable: true
+              - example: ""
+                type: "string"
+                format: "date-time"
+        accountTypeCode:
+          oneOf:
+          - nullable: true
+          - description: "pasywne, aktywne"
+            example: ""
+            type: "string"
+        currencyCode:
+          oneOf:
+          - nullable: true
+          - allOf:
+            - $ref: "#/components/schemas/cl_20090305_clm542173a20090305_iso3alphacurrencycodecontenttype_b219e03523e04d1fb3379d37001c8f0c"
+            - example: ""
+        description:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "opis konta księgowego"
+              example: ""
+              type: "string"
+        note:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "note dla konta księgowego"
+              example: ""
+              type: "string"
+    createChartOfAccounts:
+      x-oagis-bie-guid: "91484be0a9f6491c9660fa2272f3baf6"
+      x-oagis-bie-date-time: "2024-02-21T11:22:27+0000"
+      x-oagis-bie-version: ""
+      x-oagis-bie-uri: "https://tenant.oagiscore.net/profile_bie/46"
+      x-oagis-release: "10.10.3"
+      x-oagis-release-date: "2024-02-14"
+      type: "object"
+      additionalProperties: false
+      properties:
+        uuid:
+          description: "Guid"
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        partyId:
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        idSet:
+          type: "array"
+          items:
+            type: "object"
+            required:
+            - "id"
+            additionalProperties: false
+            properties:
+              id:
+                type: "array"
+                minItems: 1
+                items:
+                  oneOf:
+                  - nullable: true
+                  - description: "400\n1\nam66673"
+                    example: ""
+                    type: "string"
+                    format: "normalizedString"
+        glEntityId:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "400-1-am66673"
+              example: ""
+              type: "string"
+              format: "normalizedString"
+        effectiveTimePeriod:
+          type: "object"
+          additionalProperties: false
+          properties:
+            startDateTime:
+              example: ""
+              type: "string"
+              format: "date-time"
+            endDateTime:
+              oneOf:
+              - nullable: true
+              - example: ""
+                type: "string"
+                format: "date-time"
+        accountTypeCode:
+          oneOf:
+          - nullable: true
+          - description: "pasywne, aktywne"
+            example: ""
+            type: "string"
+        currencyCode:
+          oneOf:
+          - nullable: true
+          - allOf:
+            - $ref: "#/components/schemas/cl_20090305_clm542173a20090305_iso3alphacurrencycodecontenttype_b219e03523e04d1fb3379d37001c8f0c"
+            - example: ""
+        description:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "opis konta księgowego"
+              example: ""
+              type: "string"
+        note:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "note dla konta księgowego"
+              example: ""
+              type: "string"
+    replaceChartOfAccounts:
+      x-oagis-bie-guid: "91484be0a9f6491c9660fa2272f3baf6"
+      x-oagis-bie-date-time: "2024-02-21T11:22:27+0000"
+      x-oagis-bie-version: ""
+      x-oagis-bie-uri: "https://tenant.oagiscore.net/profile_bie/46"
+      x-oagis-release: "10.10.3"
+      x-oagis-release-date: "2024-02-14"
+      type: "object"
+      additionalProperties: false
+      properties:
+        uuid:
+          description: "Guid"
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        partyId:
+          example: ""
+          type: "string"
+          format: "normalizedString"
+        idSet:
+          type: "array"
+          items:
+            type: "object"
+            required:
+            - "id"
+            additionalProperties: false
+            properties:
+              id:
+                type: "array"
+                minItems: 1
+                items:
+                  oneOf:
+                  - nullable: true
+                  - description: "400\n1\nam66673"
+                    example: ""
+                    type: "string"
+                    format: "normalizedString"
+        glEntityId:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "400-1-am66673"
+              example: ""
+              type: "string"
+              format: "normalizedString"
+        effectiveTimePeriod:
+          type: "object"
+          additionalProperties: false
+          properties:
+            startDateTime:
+              example: ""
+              type: "string"
+              format: "date-time"
+            endDateTime:
+              oneOf:
+              - nullable: true
+              - example: ""
+                type: "string"
+                format: "date-time"
+        accountTypeCode:
+          oneOf:
+          - nullable: true
+          - description: "pasywne, aktywne"
+            example: ""
+            type: "string"
+        currencyCode:
+          oneOf:
+          - nullable: true
+          - allOf:
+            - $ref: "#/components/schemas/cl_20090305_clm542173a20090305_iso3alphacurrencycodecontenttype_b219e03523e04d1fb3379d37001c8f0c"
+            - example: ""
+        description:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "opis konta księgowego"
+              example: ""
+              type: "string"
+        note:
+          type: "array"
+          items:
+            oneOf:
+            - nullable: true
+            - description: "note dla konta księgowego"
+              example: ""
+              type: "string"
+    replaceChartOfAccountsList:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/replaceChartOfAccountsListEntry"
+    replaceChartOfAccountsListEntry:
+      x-oagis-bie-guid: "91484be0a9f6491c9660fa2272f3baf6"
+      x-oagis-bie-date-time: "2024-02-21T11:22:27+0000"
+      x-oagis-bie-version: ""
+      x-oagis-bie-uri: "https://tenant.oagiscore.net/profile_bie/46"
+      x-oagis-release: "10.10.3"
+      x-oagis-release-date: "2024-02-14"
+      required:
+      - "chartOfAccounts"
+      additionalProperties: false
+      properties:
+        chartOfAccounts:
+          type: "object"
+          additionalProperties: false
+          properties:
+            uuid:
+              description: "Guid"
+              example: ""
+              type: "string"
+              format: "normalizedString"
+            partyId:
+              example: ""
+              type: "string"
+              format: "normalizedString"
+            idSet:
+              type: "array"
+              items:
+                type: "object"
+                required:
+                - "id"
+                additionalProperties: false
+                properties:
+                  id:
+                    type: "array"
+                    minItems: 1
+                    items:
+                      oneOf:
+                      - nullable: true
+                      - description: "400\n1\nam66673"
+                        example: ""
+                        type: "string"
+                        format: "normalizedString"
+            glEntityId:
+              type: "array"
+              items:
+                oneOf:
+                - nullable: true
+                - description: "400-1-am66673"
+                  example: ""
+                  type: "string"
+                  format: "normalizedString"
+            effectiveTimePeriod:
+              type: "object"
+              additionalProperties: false
+              properties:
+                startDateTime:
+                  example: ""
+                  type: "string"
+                  format: "date-time"
+                endDateTime:
+                  oneOf:
+                  - nullable: true
+                  - example: ""
+                    type: "string"
+                    format: "date-time"
+            accountTypeCode:
+              oneOf:
+              - nullable: true
+              - description: "pasywne, aktywne"
+                example: ""
+                type: "string"
+            currencyCode:
+              oneOf:
+              - nullable: true
+              - allOf:
+                - $ref: "#/components/schemas/cl_20090305_clm542173a20090305_iso3alphacurrencycodecontenttype_b219e03523e04d1fb3379d37001c8f0c"
+                - example: ""
+            description:
+              type: "array"
+              items:
+                oneOf:
+                - nullable: true
+                - description: "opis konta księgowego"
+                  example: ""
+                  type: "string"
+            note:
+              type: "array"
+              items:
+                oneOf:
+                - nullable: true
+                - description: "note dla konta księgowego"
+                  example: ""
+                  type: "string"

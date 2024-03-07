@@ -30,46 +30,8 @@ class Blueprint
         return str_replace('\\', '/', config('blueprint.app_path'));
     }
 
-    public function parse($content, $strip_dashes = true)
+    public function parse($content)
     {
-        $content = str_replace(["\r\n", "\r"], "\n", $content);
-
-        if ($strip_dashes) {
-            $content = preg_replace('/^(\s*)-\s*/m', '\1', $content);
-        }
-
-        $content = $this->transformDuplicatePropertyKeys($content);
-
-        $content = preg_replace_callback(
-            '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi',
-            fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?): true$/mi',
-            fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)resource?$/mi',
-            fn ($matches) => $matches[1] . 'resource: web',
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)invokable?$/mi',
-            fn ($matches) => $matches[1] . 'invokable: true',
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)(ulid|uuid)(: true)?$/mi',
-            fn ($matches) => $matches[1] . 'id: ' . $matches[2] . ' primary',
-            $content
-        );
-
         return Yaml::parse($content);
     }
 

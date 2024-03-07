@@ -1,7 +1,0 @@
-models:
-  State:
-    name: string
-    countries_id: id foreign:countries
-    country_code: string foreign:countries
-    ccid: string foreign:countries
-    c_code: string foreign:countries.code

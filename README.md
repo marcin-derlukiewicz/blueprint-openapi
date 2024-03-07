@@ -1,5 +1,7 @@
-This is a try to fork blueprint as a tool to generate server based on openapi3 spec
+# This is a try to fork blueprint as a tool to generate server based on openapi3 spec
 
+This project is currently in initial stage of development.
+Bellow follows original readme of blueprint project. 
 
 
 <p align="right">

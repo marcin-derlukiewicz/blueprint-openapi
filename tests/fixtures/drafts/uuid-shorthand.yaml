@@ -1,5 +1,0 @@
-models:
-  Person:
-    uuid
-    company_id: uuid
-    timestamps

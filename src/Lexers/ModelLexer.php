@@ -4,8 +4,8 @@ namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Column;
-use Blueprint\Models\Index;
 use Blueprint\Models\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class ModelLexer implements Lexer
@@ -111,6 +111,25 @@ class ModelLexer implements Lexer
             'models' => [],
             'cache' => [],
         ];
+        if (!Arr::has($tokens, 'components.schemas')) {
+            return $registry;
+        }
+
+        foreach (Arr::get($tokens, 'components.schemas') as $name => $schema) {
+            if (!Arr::hasAny($schema, ['enum', 'properties'])) {
+                continue;
+            }
+            //            @TODO
+            //            if (Arr::has($schema, 'enum')) {
+            //                $registry['models'][$name] = $this->buildEnum($name, $schema);
+            //            }
+            if (Arr::has($schema, 'properties')) {
+                // @TODO make DTO here
+                $name_without_action = Str::remove(['query', 'create', 'replace'], $name);
+                $registry['models'][$name] = $this->buildModel($name, $schema);
+            }
+
+        }
 
         if (!empty($tokens['models'])) {
             foreach ($tokens['models'] as $name => $definition) {
@@ -130,131 +149,73 @@ class ModelLexer implements Lexer
     private function buildModel(string $name, array $columns): Model
     {
         $model = new Model($name);
-
-        if (isset($columns['meta']) && is_array($columns['meta'])) {
-            if (isset($columns['meta']['table'])) {
-                $model->setTableName($columns['meta']['table']);
-            }
-
-            if (!empty($columns['meta']['pivot'])) {
-                $model->setPivot();
-            }
-
-            unset($columns['meta']);
-        }
-
-        if (isset($columns['id'])) {
-            if ($columns['id'] === false) {
-                $model->disablePrimaryKey();
-                unset($columns['id']);
+        if (!empty($columns['type']) && $columns['type'] === 'object') {
+            foreach ($columns['properties'] as $name => $definition) {
+                $column = $this->buildColumn($name, $definition);
+                $model->addColumn($column);
             }
         }
 
-        if (isset($columns['timestamps'])) {
-            if ($columns['timestamps'] === false) {
-                $model->disableTimestamps();
-            }
-
-            unset($columns['timestamps']);
-        } elseif (isset($columns['timestampstz'])) {
-            $model->enableTimestamps(true);
-            unset($columns['timestampstz']);
-        }
-
-        if (isset($columns['softdeletes'])) {
-            $model->enableSoftDeletes();
-            unset($columns['softdeletes']);
-        } elseif (isset($columns['softdeletestz'])) {
-            $model->enableSoftDeletes(true);
-            unset($columns['softdeletestz']);
-        }
-
-        if (isset($columns['relationships'])) {
-            if (is_array($columns['relationships'])) {
-                foreach ($columns['relationships'] as $type => $relationships) {
-                    foreach (explode(',', $relationships) as $relationship) {
-                        $type = self::$relationships[strtolower($type)];
-                        $model->addRelationship($type, trim($relationship));
-
-                        if ($type === 'belongsTo') {
-                            $column = $this->columnNameFromRelationship($relationship);
-                            if (isset($columns[$column]) && !str_contains($columns[$column], ' foreign') && !str_contains($columns[$column], ' id')) {
-                                $columns[$column] = trim($this->removeDataTypes($columns[$column]) . ' id:' . Str::before($relationship, ':'));
-                            }
-                        }
-                    }
-                }
-            }
-
-            unset($columns['relationships']);
-        }
-
-        if (isset($columns['indexes'])) {
-            foreach ($columns['indexes'] as $index) {
-                $model->addIndex(new Index(key($index), array_map('trim', explode(',', current($index)))));
-            }
-            unset($columns['indexes']);
-        }
-
-        if (!isset($columns['id']) && $model->usesPrimaryKey()) {
-            $column = $this->buildColumn('id', 'id');
-            $model->addColumn($column);
-        }
-
-        foreach ($columns as $name => $definition) {
-            $column = $this->buildColumn($name, $definition);
-            $model->addColumn($column);
-        }
-
-        $this->inferMissingBelongsToRelationships($model);
+        //        $this->inferMissingBelongsToRelationships($model);
 
         return $model;
     }
 
-    private function buildColumn(string $name, string $definition): Column
+    private function buildColumn(string $name, array $definition): Column
     {
         $data_type = null;
         $modifiers = [];
 
-        $tokens = $this->parseColumn($definition);
-        foreach ($tokens as $token) {
-            $parts = explode(':', $token);
-            $value = $parts[0];
+        $data_type = $this->getDataType($definition) ?: $data_type;
 
-            if ($value === 'id') {
-                $data_type = 'id';
-                if (isset($parts[1])) {
-                    $attributes = [$parts[1]];
+        if (!Arr::exists($definition, 'type') && Arr::exists($definition, 'oneOf')) {
+            foreach (Arr::get($definition, 'oneOf') as $item) {
+                $data_type = $this->getDataType($item) ?: $data_type;
+                if (Arr::exists($item,'allOf')) {
+                    $data_type = 'enum';
                 }
-            } elseif (isset(self::$dataTypes[strtolower($value)])) {
-                $attributes = $parts[1] ?? null;
-                $data_type = self::$dataTypes[strtolower($value)];
-                if (!empty($attributes)) {
-                    $attributes = explode(',', $attributes);
-
-                    if ($data_type === 'enum') {
-                        $attributes = array_map(fn ($attribute) => trim($attribute, '"'), $attributes);
-                    }
-                }
-            }
-
-            if (isset(self::$modifiers[strtolower($value)])) {
-                $modifierAttributes = $parts[1] ?? null;
-                if (is_null($modifierAttributes)) {
-                    $modifiers[] = self::$modifiers[strtolower($value)];
-                } else {
-                    $modifiers[] = [self::$modifiers[strtolower($value)] => preg_replace('~^[\'"]?(.*?)[\'"]?$~', '$1', $modifierAttributes)];
+                if (!empty($item['nullable']) && is_bool($item['nullable']) && $item['nullable'] === true) {
+                    $modifiers[] = 'nullable';
                 }
             }
         }
 
-        if (is_null($data_type)) {
-            $is_foreign_key = collect($modifiers)->contains(fn ($modifier) => (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign');
 
-            $data_type = $is_foreign_key ? 'id' : 'string';
+
+        if ($name === 'uuid') {
+            $data_type = 'uuid';
         }
 
         return new Column($name, $data_type, $modifiers, $attributes ?? []);
+    }
+
+    /**
+     * @param  string  $data_type
+     */
+    public function getDataType(array $definition): ?string
+    {
+        if (empty($definition['type'])) {
+            return null;
+        }
+        if (empty($definition['format'])) {
+            $definition['format'] = 'normalizedString';
+        }
+
+        if ($definition['type'] === 'string' && $definition['format'] === 'normalizedString') {
+            $data_type = 'string';
+        }
+
+        if ($definition['type'] === 'string' && $definition['format'] === 'string') {
+            $data_type = 'text';
+        }
+
+
+
+        if ($definition['type'] === 'array' || $definition['type'] === 'object') {
+            $data_type = 'json';
+        }
+
+        return $data_type ?: null;
     }
 
     /**
@@ -345,5 +306,9 @@ class ModelLexer implements Lexer
     private function parseColumn(string $definition): array
     {
         return preg_split('#("|\').*?\1(*SKIP)(*FAIL)|\s+#', $definition);
+    }
+
+    private function buildEnum(int|string $name, mixed $schema)
+    {
     }
 }

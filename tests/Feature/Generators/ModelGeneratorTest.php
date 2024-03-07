@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Generators;
+namespace Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
@@ -42,112 +42,9 @@ final class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('modelTreeDataProvider')]
-    public function output_generates_models($definition, $path, $model): void
+    public function output_generates_models(): void
     {
-        $this->filesystem->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
-
-        $this->filesystem->expects('stub')
-            ->with('model.fillable.stub')
-            ->andReturn($this->stub('model.fillable.stub'));
-
-        if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
-            $this->filesystem->expects('stub')
-                ->with('model.hidden.stub')
-                ->andReturn($this->stub('model.hidden.stub'));
-        }
-
-        if ($definition === 'drafts/model-with-meta.yaml') {
-            $this->filesystem->expects('stub')
-                ->with('model.table.stub')
-                ->andReturn($this->stub('model.table.stub'));
-        }
-
-        $this->filesystem->expects('stub')
-            ->with('model.casts.stub')
-            ->andReturn($this->stub('model.casts.stub'));
-
-        $this->filesystem->shouldReceive('stub')
-            ->with('model.method.stub')
-            ->andReturn($this->stub('model.method.stub'));
-
-        $this->filesystem->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture($model));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
-    #[Test]
-    public function output_works_for_pascal_case_definition(): void
-    {
-        $this->filesystem->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
-        $this->filesystem->expects('stub')
-            ->with('model.fillable.stub')
-            ->andReturn($this->stub('model.fillable.stub'))
-            ->twice();
-        $this->filesystem->expects('stub')
-            ->with('model.casts.stub')
-            ->andReturn($this->stub('model.casts.stub'))
-            ->twice();
-        $this->filesystem->expects('stub')
-            ->with('model.method.stub')
-            ->andReturn($this->stub('model.method.stub'))
-            ->twice();
-
-        $certificateModel = 'app/Models/Certificate.php';
-        $certificateTypeModel = 'app/Models/CertificateType.php';
-
-        $this->filesystem->expects('exists')
-            ->with(dirname($certificateModel))
-            ->andReturnTrue();
-        $this->filesystem->expects('put')
-            ->with($certificateModel, $this->fixture('models/certificate-pascal-case-example.php'));
-
-        $this->filesystem->expects('exists')
-            ->with(dirname($certificateTypeModel))
-            ->andReturnTrue();
-        $this->filesystem->expects('put')
-            ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$certificateModel, $certificateTypeModel]], $this->subject->output($tree));
-    }
-
-    #[Test]
-    public function output_generates_relationships(): void
-    {
-        $this->filesystem->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
-        $this->filesystem->expects('stub')
-            ->with('model.fillable.stub')
-            ->andReturn($this->stub('model.fillable.stub'));
-        $this->filesystem->expects('stub')
-            ->with('model.casts.stub')
-            ->andReturn($this->stub('model.casts.stub'));
-        $this->filesystem->expects('stub')
-            ->with('model.method.stub')
-            ->andReturn($this->stub('model.method.stub'));
-
-        $this->filesystem->expects('exists')
-            ->with('app/Models')
-            ->andReturnTrue();
-        $this->filesystem->expects('put')
-            ->with('app/Models/Subscription.php', $this->fixture('models/model-relationships.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/oagi.yml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Models/Subscription.php']], $this->subject->output($tree));
